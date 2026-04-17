@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizzon Web recipes Info</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+
+    <div id="recipesDetails">
+
+    </div>
+
+
+    <script src="app.js"></script>
+
+    <script>
+
+        let recipesDetails = document.getElementById("recipesDetails");
+         
+        let index = localStorage.getItem("recipesIndex");
+
+        let recipe = recipes[index];
+
+        recipesDetails.innerHTML = `
+<div class="container-fluid">
+    <div class="row justify-content-center" style="gap: 50px;">
+
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="box">
+                <img src="${recipe.image}" alt="">
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 col-sm-12">
+            <div class="box">
+                <h2>${recipe.name}</h2>
+                <p><strong>Price:</strong> ${recipe.price}</p>
+                <p><strong>Ingredients:</strong> ${recipe.ingredients.join(", ")}</p>
+                <p><strong>Instructions:</strong> ${recipe.instructions.join("<br>")}</p>
+                <p><strong>Difficulty:</strong> ${recipe.difficulty}</p>
+                <p><strong>Cuisine:</strong> ${recipe.cuisine}</p>
+                <p><strong>Calories:</strong> ${recipe.caloriesPerServing}</p>
+                <p><strong>Rating:</strong> ${recipe.rating}</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+`
+
+    </script>
+
+</body>
+
+</html>
