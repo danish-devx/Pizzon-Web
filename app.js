@@ -1350,13 +1350,15 @@ let recipes = [
 ]
 
 
-console.log(recipes);
 
-let userChoice = document.getElementById("userChoice")
+
+let userChoice = document.getElementById("userChoice");
 let show = document.getElementById("show");
 
 function Generate() {
 
+
+  if (!show || !userChoice) return; 
 
   show.innerHTML = ""
   
@@ -1365,7 +1367,7 @@ function Generate() {
     if(userChoice.value == "All" || recipes[i].difficulty == userChoice.value){
 
       
-       show.innerHTML += `  <div class="card">
+       show.innerHTML += `  <div class="card" onclick="recipesInfo(${i})">
        
        <img src="${recipes[i].image}" alt="">
        
@@ -1388,6 +1390,22 @@ function Generate() {
 
 
 Generate();
+
+
+
+function recipesInfo(index) {
+
+
+  localStorage.setItem("recipesIndex", index)
+  window.location.assign("recipesInfo.html")
+
+  
+}
+
+
+
+
+
 
 
 
