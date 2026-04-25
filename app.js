@@ -1266,141 +1266,158 @@ let recipes = [
       "mealType": [
         "Beverage"
       ]
-    },
-     {
-      "id": 31,
-      "name": "Classic Margherita Pizza",
-       "price": "$99.00",
-      "ingredients": [
-        "Pizza dough",
-        "Tomato sauce",
-        "Fresh mozzarella cheese",
-        "Fresh basil leaves",
-        "Olive oil",
-        "Salt and pepper to taste"
-      ],
-      "instructions": [
-        "Preheat the oven to 475°F (245°C).",
-        "Roll out the pizza dough and spread tomato sauce evenly.",
-        "Top with slices of fresh mozzarella and fresh basil leaves.",
-        "Drizzle with olive oil and season with salt and pepper.",
-        "Bake in the preheated oven for 12-15 minutes or until the crust is golden brown.",
-        "Slice and serve hot."
-      ],
-      "prepTimeMinutes": 20,
-      "cookTimeMinutes": 15,
-      "servings": 4,
-      "difficulty": "Easy",
-      "cuisine": "Italian",
-      "caloriesPerServing": 300,
-      "tags": [
-        "Pizza",
-        "Italian"
-      ],
-      "userId": 166,
-      "image": "https://cdn.dummyjson.com/recipe-images/1.webp",
-      "rating": 4.6,
-      "reviewCount": 98,
-      "mealType": [
-        "Dinner"
-      ]
-    },
-    {
-      "id": 32,
-      "name": "Vegetarian Stir-Fry",
-       "price": "$100.00",
-      "ingredients": [
-        "Tofu, cubed",
-        "Broccoli florets",
-        "Carrots, sliced",
-        "Bell peppers, sliced",
-        "Soy sauce",
-        "Ginger, minced",
-        "Garlic, minced",
-        "Sesame oil",
-        "Cooked rice for serving"
-      ],
-      "instructions": [
-        "In a wok, heat sesame oil over medium-high heat.",
-        "Add minced ginger and garlic, sauté until fragrant.",
-        "Add cubed tofu and stir-fry until golden brown.",
-        "Add broccoli, carrots, and bell peppers. Cook until vegetables are tender-crisp.",
-        "Pour soy sauce over the stir-fry and toss to combine.",
-        "Serve over cooked rice."
-      ],
-      "prepTimeMinutes": 15,
-      "cookTimeMinutes": 20,
-      "servings": 3,
-      "difficulty": "Medium",
-      "cuisine": "Asian",
-      "caloriesPerServing": 250,
-      "tags": [
-        "Vegetarian",
-        "Stir-fry",
-        "Asian"
-      ],
-      "userId": 143,
-      "image": "https://cdn.dummyjson.com/recipe-images/2.webp",
-      "rating": 4.7,
-      "reviewCount": 26,
-      "mealType": [
-        "Lunch"
-      ]
-    },
+    }
+    
 ]
 
 
 
-
-let userChoice = document.getElementById("userChoice");
 let show = document.getElementById("show");
+let showMoreBtn = document.getElementById("Show-More");
+let difficultyOption = document.getElementById("difficulty");
+let cuisineOption =  document.getElementById("cuisine");
+let inputSearch   = document.getElementById("search");
+let limit = 4;
+let currentIndex = 0;
 
-function Generate() {
 
 
-  if (!show || !userChoice) return; 
 
-  show.innerHTML = ""
+if (show) {
+
+  
+  function recipesRender(data, reset=false) {
+
+    if(reset){
+      show.innerHTML = "";
+      currentIndex = 0;
+    }
+
+    if (data.length === 0) {
+      show.innerHTML = "<h2 style='color:white;text-align:center'>No Recipes Found </h2>";
+      showMoreBtn.style.display = "none";
+      return;
+    }
+    
+    let end = currentIndex + limit;
+    
+    for (let i = currentIndex; i<end && i<data.length; i++) {
+      
+      show.innerHTML += `  <div class="card" onclick="recipesInfo(${recipes.indexOf(data[i])})">
+       
+      <img src="${data[i].image}" alt="">
+      
+      <h2>${data[i].name}</h2>
+      
+      <p>${data[i].ingredients.join(", ")}</p>
+      
+      <h4>${data[i].difficulty}</h4>
+      
+      <h4>${data[i].cuisine}</h4>
+      
+       <span>${data[i].price}</span>
+       
+       </div>`
+    
+  }
+
+  currentIndex = end;
+  
+  if (currentIndex >= data.length) {
+    
+    showMoreBtn.style.display = "none";
+    
+  } else {
+    
+    showMoreBtn.style.display = "block";
+    
+  }
+  
+}
+
+
+let difficultyValue = [];
+let cuisineValue = [];
+
+for (let i = 0; i < recipes.length; i++) {
+  
+  if(!difficultyValue.includes(recipes[i].difficulty)){
+    difficultyValue.push(recipes[i].difficulty)
+  }
+  
+  if(!cuisineValue.includes(recipes[i].cuisine)){
+    cuisineValue.push(recipes[i].cuisine)
+  }
+  
+}
+
+
+for (let i = 0; i < difficultyValue.length; i++) {
+  
+  difficultyOption.innerHTML += `<option value="${difficultyValue[i]}">${difficultyValue[i]}</option>`
+  
+}
+
+for (let i = 0; i < cuisineValue.length; i++) {
+  
+  cuisineOption.innerHTML += `<option value="${cuisineValue[i]}">${cuisineValue[i]}</option>`
+  
+}
+
+
+
+let filterData = recipes
+function filterRecipes() {
+  
+  filterData = [];
+  let difficultySelect = difficultyOption.value;
+  let cuisineSelect = cuisineOption.value;
+  let searchValue = inputSearch.value;
   
   for (let i = 0; i < recipes.length; i++) {
     
-    if(userChoice.value == "All" || recipes[i].difficulty == userChoice.value){
-
-      
-       show.innerHTML += `  <div class="card" onclick="recipesInfo(${i})">
-       
-       <img src="${recipes[i].image}" alt="">
-       
-       <h2>${recipes[i].name}</h2>
-       
-       <p>${recipes[i].ingredients.join(", ")}</p>
-       
-       <h4>${recipes[i].difficulty}</h4>
-       
-       <span>${recipes[i].price}</span>
-       
-       </div>`
-      
+    let difficultyMatch = difficultySelect == "All" || difficultySelect == recipes[i].difficulty;
+    let cuisineMatch = cuisineSelect == "All" || cuisineSelect == recipes[i].cuisine;
+    let inputMatch = recipes[i].name.toLowerCase().includes(searchValue.toLowerCase());
+   
+    if(difficultyMatch && cuisineMatch && inputMatch){
+      filterData.push(recipes[i]);
     }
     
   }
   
+  recipesRender(filterData, true);
   
 }
 
 
-Generate();
+if (showMoreBtn) {
+  showMoreBtn.addEventListener("click", ()=>{
+    recipesRender(filterData,false);
+  })
+}
 
+difficultyOption.addEventListener("change",filterRecipes);
+cuisineOption.addEventListener("change",filterRecipes);
+inputSearch.addEventListener("input" ,filterRecipes);
+
+
+filterRecipes();
 
 
 function recipesInfo(index) {
-
-
+  
+  
   localStorage.setItem("recipesIndex", index)
   window.location.assign("recipesInfo.html")
-
+  
   
 }
+
+
+}
+
+
 
 
 
